@@ -30,29 +30,11 @@ emptyBoard([
 % goMove(+Board, +Player, +Pos, -RBoard)
 % RBoard es la configuración resultante de reflejar la movida del jugador Player
 % en la posición Pos a partir de la configuración Board.
-goMove(Board, n, [R,C], RRBoard):-
-	reemplazarBoard(Board, R, C, n, Board0),
-    FilaN is Fila-1,
-	FilaNN is Fila+1,
-	ColN is Col-1,
-	ColNN is Col+1,
-	cascaraBuscarEncierro(Board0, FilaN, Col, b, Board1),
-	cascaraBuscarEncierro(Board1, Fila, ColN, b, Board2),	
-	cascaraBuscarEncierro(Board2, FilaNN, Col, b, Board3),
-	cascaraBuscarEncierro(Board3, Fila, ColNN, b, RBoard).
+goMove(Board, Color, [Fila,Col], RRBoard):-
+	reemplazarBoard(Board, Fila, Col, Color, Board0),
+    cascaraEncerrado(Board, Fila, Col, Color, RBoard).
 
-goMove(Board, b, [R,C], RRBoard):-
-	reemplazarBoard(Board, R, C, b, Board0),
-    FilaN is Fila-1,
-	FilaNN is Fila+1,
-	ColN is Col-1,
-	ColNN is Col+1,
-	cascaraBuscarEncierro(Board0, FilaN, Col, n, Board1),
-	cascaraBuscarEncierro(Board1, Fila, ColN, n, Board2),	
-	cascaraBuscarEncierro(Board2, FilaNN, Col, n, Board3),
-	cascaraBuscarEncierro(Board3, Fila, ColNN, n, RBoard).
-
-
+%reemplazarBoard
 reemplazarBoard(Board, Fila, Col, Color, RBoard);-
 	replace(Fila, R, NFila, Board, RBoard),
     replace("-", Col, Color, Fila, NFila).
@@ -64,6 +46,22 @@ replace(X, XIndex, Y, [Xi|Xs], [Xi|XsY]):-
     XIndex > 0,
     XIndexS is XIndex - 1,
     replace(X, XIndexS, Y, Xs, XsY).
+
+%cascaraEncerrado
+cascaraEncerrado(Board, Fila, Col, Color, RBoard):-
+	FilaN is Fila-1,
+	FilaNN is Fila+1,
+	ColN is Col-1,
+	ColNN is Col+1,
+	invertirColor(Color,ColorI),
+	cascaraBuscarEncierro(Board0, FilaN, Col, ColorI, Board1),
+	cascaraBuscarEncierro(Board1, Fila, ColN, ColorI, Board2),	
+	cascaraBuscarEncierro(Board2, FilaNN, Col, ColorI, Board3),
+	cascaraBuscarEncierro(Board3, Fila, ColNN, ColorI, RBoard).
+
+%invertirColor
+invertirColor(n,b).
+invertirColor(b,n).
 
 % cascaraBuscarEncerrado
 cascaraBuscarEncerrado(Board, R, C, Color, Board):- 
