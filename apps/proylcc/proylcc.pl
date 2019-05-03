@@ -38,8 +38,13 @@ emptyBoard([
 % en la posición Pos a partir de la configuración Board.
 goMove(Board, Color, [Fila,Col], RRBoard):-
 	reemplazarBoard("-", Board, Fila, Col, Color, RBoard),
-	%not(suicidio()).
     cascaraEncerrado(RBoard, Fila, Col, Color, RRBoard).
+    %not(suicidio(RBoard,Fila,Col,Color)).
+
+%suicidio
+suicidio(Board, Fila, Col, Color):-
+	limpiarEncerrado(Board, Fila, Col, Color, RBoard),
+	Board \== RBoard.
 
 %reemplazarBoard
 reemplazarBoard(Ant ,Board, F, C, Color, RBoard):-
