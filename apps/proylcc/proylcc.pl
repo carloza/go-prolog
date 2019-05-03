@@ -39,16 +39,7 @@ emptyBoard([
 goMove(Board, Color, [Fila,Col], RRBoard):-
 	reemplazarBoard("-", Board, Fila, Col, Color, RBoard),
 	%not(suicidio()).
-    %cascaraEncerrado(RBoard, Fila, Col, Color, RRBoard).
-    FilaN is Fila-1,
-	FilaNN is Fila+1,
-	ColN is Col-1,
-	ColNN is Col+1,
-	invertirColor(Color,ColorI),
-	cascaraBuscarEncierro(RBoard, FilaN, Col, ColorI, Board1),
-	cascaraBuscarEncierro(Board1, Fila, ColN, ColorI, Board2),	
-	cascaraBuscarEncierro(Board2, FilaNN, Col, ColorI, Board3),
-	cascaraBuscarEncierro(Board3, Fila, ColNN, ColorI, RRBoard).
+    cascaraEncerrado(RBoard, Fila, Col, Color, RRBoard).
 
 %reemplazarBoard
 reemplazarBoard(Ant ,Board, F, C, Color, RBoard):-
@@ -95,11 +86,14 @@ limpiarEncerrado(Board, _Fila, 19, _Color, Board).
 limpiarEncerrado(Board, Fila, Col, Color, Board):-
 	invertirColor(Color, ColorI),
 	reemplazarBoard(ColorI, Board, Fila, Col, ColorI, Board).
+
+limpiarEncerrado(Board, Fila, Col, _Color, Board):-
+	reemplazarBoard("l", Board, Fila, Col, "l", Board).
 %caso general
 limpiarEncerrado(Board, Fila, Col, Color, RBoard):-
-	noVacio(Board, Fila, Col), %aca verifico que esa celda no es vacia (si fuera vacia no estaria encerrada)
+	%noVacio(Board, Fila, Col), %aca verifico que esa celda no es vacia (si fuera vacia no estaria encerrada)
 	%reemplazarBoard( _, Board, Fila, Col, Color, Board), %miro que sea el color que venia limpiando
-	reemplazarBoard(Color, Board, Fila, Col, "-", Board0), %aca efectivamente la limpio (es decir coloco un vacio)
+	reemplazarBoard(Color, Board, Fila, Col, "l", Board0), %aca efectivamente la limpio (es decir coloco un vacio)
 														   %tambien verificaria si es del color que venia cambiando
 	%de aca en adelante limpio las de alrededor
 	FilaN is Fila-1,
