@@ -97,6 +97,7 @@ function handleFailure() {
 
 function handleClick(row, col) {
     const s = "goMove(" + Pengine.stringify(gridData) + "," + Pengine.stringify(turnBlack ? "b" : "w") + "," + "[" + row + "," + col + "]" + ",Board)";
+    //alert(s);
     pengine.ask(s);
     latestStone = [row, col];
 }

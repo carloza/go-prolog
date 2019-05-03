@@ -39,7 +39,16 @@ emptyBoard([
 goMove(Board, Color, [Fila,Col], RRBoard):-
 	reemplazarBoard("-", Board, Fila, Col, Color, RBoard),
 	%not(suicidio()).
-    cascaraEncerrado(RBoard, Fila, Col, Color, RRBoard).
+    %cascaraEncerrado(RBoard, Fila, Col, Color, RRBoard).
+    FilaN is Fila-1,
+	FilaNN is Fila+1,
+	ColN is Col-1,
+	ColNN is Col+1,
+	invertirColor(Color,ColorI),
+	cascaraBuscarEncierro(RBoard, FilaN, Col, ColorI, Board1),
+	cascaraBuscarEncierro(Board1, Fila, ColN, ColorI, Board2),	
+	cascaraBuscarEncierro(Board2, FilaNN, Col, ColorI, Board3),
+	cascaraBuscarEncierro(Board3, Fila, ColNN, ColorI, RRBoard).
 
 %reemplazarBoard
 reemplazarBoard(Ant ,Board, F, C, Color, RBoard):-
@@ -67,8 +76,8 @@ cascaraEncerrado(Board, Fila, Col, Color, RBoard):-
 	cascaraBuscarEncierro(Board3, Fila, ColNN, ColorI, RBoard).
 
 %invertirColor
-invertirColor(b,w).
-invertirColor(w,b).
+invertirColor("b","w").
+invertirColor("w","b").
 
 % cascaraBuscarEncerrado, si limpiar falla devuelvo el mimso tablero, es decir limpio
 cascaraBuscarEncierro(Board, R, C, Color, Board):- 
