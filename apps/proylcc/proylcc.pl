@@ -3,6 +3,7 @@
 		emptyBoard/1,
 		goMove/4
 	]).
+
 % Empiezo a contar de 0 hasta 18 (19 filas x 19 columnas).
 emptyBoard([
 		 ["-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-"],
@@ -26,34 +27,88 @@ emptyBoard([
 		 ["-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-"]
 		 ]).
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
 % goMove(+Board, +Player, +Pos, -RBoard)
-%
 % RBoard es la configuración resultante de reflejar la movida del jugador Player
 % en la posición Pos a partir de la configuración Board.
+goMove(Board, n, [R,C], RRBoard):-
+	reemplazarBoard(Board, R, C, n, Board0),
+    FilaN is Fila-1,
+	FilaNN is Fila+1,
+	ColN is Col-1,
+	ColNN is Col+1,
+	cascaraBuscarEncierro(Board0, FilaN, Col, b, Board1),
+	cascaraBuscarEncierro(Board1, Fila, ColN, b, Board2),	
+	cascaraBuscarEncierro(Board2, FilaNN, Col, b, Board3),
+	cascaraBuscarEncierro(Board3, Fila, ColNN, b, RBoard).
 
-goMove(Board, Player, [R,C], RBoard):-
-	replace(Row, R, NRow, Board, RBoard),
-    replace("-", C, Player, Row, NRow).
+goMove(Board, b, [R,C], RRBoard):-
+	reemplazarBoard(Board, R, C, b, Board0),
+    FilaN is Fila-1,
+	FilaNN is Fila+1,
+	ColN is Col-1,
+	ColNN is Col+1,
+	cascaraBuscarEncierro(Board0, FilaN, Col, n, Board1),
+	cascaraBuscarEncierro(Board1, Fila, ColN, n, Board2),	
+	cascaraBuscarEncierro(Board2, FilaNN, Col, n, Board3),
+	cascaraBuscarEncierro(Board3, Fila, ColNN, n, RBoard).
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
+reemplazarBoard(Board, Fila, Col, Color, RBoard);-
+	replace(Fila, R, NFila, Board, RBoard),
+    replace("-", Col, Color, Fila, NFila).
+
 % replace(?X, +XIndex, +Y, +Xs, -XsY)
-%
-
 replace(X, 0, Y, [X|Xs], [Y|Xs]).
 
 replace(X, XIndex, Y, [Xi|Xs], [Xi|XsY]):-
     XIndex > 0,
     XIndexS is XIndex - 1,
     replace(X, XIndexS, Y, Xs, XsY).
+
+% cascaraBuscarEncerrado
+cascaraBuscarEncerrado(Board, R, C, Color, Board):- 
+	not(limpiarEncerrado(Board, R, C, Color, _RBoard)).
+
+cascaraBuscarEncerrado(Board, Fila, Col, Color, RBoard):-
+	limpiarEncerrado(Board, Fila, Col, Color, RBoard).
+
+
+%aca estoy en los caso base donde me caigo del Board, no deberia moficar el Board
+limpiarEncerrado(Board, -1, Col, Color, Board).
+limpiarEncerrado(Board, Fila, -1, Color, Board).
+limpiarEncerrado(Board, 19, Col, Color, Board).
+limpiarEncerrado(Board, Fila, 19, Color, Board).
+
+limpiarEncerrado(Board, Fila, Col, Color, Rta):-
+	noVacio(Board, Fila, Col)), %aca verifico que esa celda no es vacia (si fuera vacia no estaria encerrada)
+	replace(Board, Fila, Col, Color, Board), %miro que sea el color que venia limpiando
+	replace(Board, Fila, Col, "-", Board0), %aca efectivamente la limpio (es decir coloco un vacio)
+	%de aca en adelante limpio las de alrededor
+	FilaN is Fila-1,
+	FilaNN is Fila+1,
+	ColN is Col-1,
+	ColNN is Col+1,
+	limpiarEncerrado(Board0, FilaN, Col, Color, Board1),
+	limpiarEncerrado(Board1, Fila, ColN, Color, Board2),	
+	limpiarEncerrado(Board2, FilaNN, Col, Color, Board3),
+	limpiarEncerrado(Board3, Fila, ColNN, Color, RBoard).
+
+% verVacio
+	noVacio(Board, Fila, Col):-
+		not(replace(Board,Fila,Col,"-",Board)).	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%TODA LA BASURA QUE NO SIRBE QUEDARA DE ACA EN ADELANTE
 	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% encerrado(+Tablero, +Fila, +Col, +Color, -Lista?(Para evitar ciclos).
+% adyacentes(Board, Fila, Col, *[[i, j, c]|....]*).
 %
+
+
+%adyacentes(Board, Fila, Col, R):-
+
+% encerrado(+Board, +Fila, +Col, +Color, -Lista?(Para evitar ciclos).
+
 /*
 encerrado(Board, Fila, Col, Color, RBoard):-
 
@@ -61,69 +116,22 @@ encerrado(Board, Fila, Col, Color, RBoard):-
 	FilaNN is Fila+1,
 	ColN is Col-1,
 	ColNN is Col+1,
-	borrarTablero(Board, Fila, Col, Color, Tablero0),
-	buscarEncerrado(Tablero0, FilaN, Col, Color, Tablero1),
-	buscarEncerrado(Tablero1, Fila, ColN, Color, Tablero2),	
-	buscarEncerrado(Tablero2, FilaNN, Col, Color, Tablero3),
-	buscarEncerrado(Tablero3, Fila, ColNN, Color, RBoard).
-*/
-		
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-% buscarEncerrado
-%
-buscarEncerrado(Board, -1, Col, Color, Board).
-
-buscarEncerrado(Board, Fila, -1, Color, Board).
-
-buscarEncerrado(Board, 19, Col, Color, Board).
-
-buscarEncerrado(Board, Fila, 19, Color, Board).
-
-buscarEncerrado(Board, Fila, Col, Color, Rta):-
-	not(verVacio(Board, Fila, Col)),
-	replace(Board, Fila, Col, Color, Board),
-	FilaN is Fila-1,
-	FilaNN is Fila+1,
-	ColN is Col-1,
-	ColNN is Col+1,
-	replace(Board, Fila, Col, "-", Tablero0),
-	buscarEncerrado(Tablero0, FilaN, Col, Color, Tablero1),
-	buscarEncerrado(Tablero1, Fila, ColN, Color, Tablero2),	
-	buscarEncerrado(Tablero2, FilaNN, Col, Color, Tablero3),
-	buscarEncerrado(Tablero3, Fila, ColNN, Color, RBoard).
-	
-	
-	
+	borrarBoard(Board, Fila, Col, Color, Board0),
+	limpiarEncerrado(Board0, FilaN, Col, Color, Board1),
+	limpiarEncerrado(Board1, Fila, ColN, Color, Board2),	
+	limpiarEncerrado(Board2, FilaNN, Col, Color, Board3),
+	limpiarEncerrado(Board3, Fila, ColNN, Color, RBoard).
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
 % verVacio
-%	
 	verVacio(Board, Fila, Col):-
 		buscar(Board, Fila, NFila),
 		buscar(NFila, Col, "-").
-		
-		
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
+
 % buscar
-%	
 	buscar([L|Ls], 0, L).
 	buscar([L|Ls], N, Rta):-
 		NN is N-1,
 		buscar(Ls, NN, Rta).
-	
-	
-	
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-% adyacentes(Tablero, Fila, Col, *[[i, j, c]|....]*).
-%
 
-
-%adyacentes(Board, Fila, Col, R):-
-
-
-
+*/
