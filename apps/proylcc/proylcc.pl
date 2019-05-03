@@ -103,7 +103,9 @@ limpiarEncerrado(Board, Fila, Col, Color, RBoard):-
 	limpiarEncerrado(Board0, FilaN, Col, Color, Board1),
 	limpiarEncerrado(Board1, Fila, ColN, Color, Board2),	
 	limpiarEncerrado(Board2, FilaNN, Col, Color, Board3),
-	limpiarEncerrado(Board3, Fila, ColNN, Color, RBoard).
+	limpiarEncerrado(Board3, Fila, ColNN, Color, RRBoard),
+
+	reemplazarBoard("l", RRBoard, Fila, Col, "-", RBoard).
 
 % verVacio
 noVacio(Board, Fila, Col):-
