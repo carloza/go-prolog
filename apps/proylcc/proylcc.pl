@@ -32,6 +32,7 @@ emptyBoard([
 % en la posición Pos a partir de la configuración Board.
 goMove(Board, Color, [Fila,Col], RRBoard):-
 	reemplazarBoard("-", Board, Fila, Col, Color, RBoard),
+	%not(suicidio()).
     cascaraEncerrado(RBoard, Fila, Col, Color, RRBoard).
 
 %reemplazarBoard
@@ -60,8 +61,8 @@ cascaraEncerrado(Board, Fila, Col, Color, RBoard):-
 	cascaraBuscarEncierro(Board3, Fila, ColNN, ColorI, RBoard).
 
 %invertirColor
-invertirColor(n,b).
-invertirColor(b,n).
+invertirColor(b,w).
+invertirColor(w,b).
 
 % cascaraBuscarEncerrado, si limpiar falla devuelvo el mimso tablero, es decir limpio
 cascaraBuscarEncerrado(Board, R, C, Color, Board):- 
