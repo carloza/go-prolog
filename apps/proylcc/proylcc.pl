@@ -1,7 +1,12 @@
 :- module(proylcc,
 	[  
 		emptyBoard/1,
-		goMove/4
+		goMove/4,
+		reemplazarBoard/6,
+		cascaraEncerrado/5,
+		cascaraBuscarEncierro/5,
+		invertirColor/2,
+		limpiarEncerrado/5
 	]).
 
 % Empiezo a contar de 0 hasta 18 (19 filas x 19 columnas).
@@ -65,9 +70,9 @@ invertirColor(b,w).
 invertirColor(w,b).
 
 % cascaraBuscarEncerrado, si limpiar falla devuelvo el mimso tablero, es decir limpio
-cascaraBuscarEncerrado(Board, R, C, Color, Board):- 
+cascaraBuscarEncierro(Board, R, C, Color, Board):- 
 	not(limpiarEncerrado(Board, R, C, Color, _RBoard)).
-cascaraBuscarEncerrado(Board, Fila, Col, Color, RBoard):-
+cascaraBuscarEncierro(Board, Fila, Col, Color, RBoard):-
 	limpiarEncerrado(Board, Fila, Col, Color, RBoard).
 
 
@@ -97,8 +102,8 @@ limpiarEncerrado(Board, Fila, Col, Color, RBoard):-
 	limpiarEncerrado(Board3, Fila, ColNN, Color, RBoard).
 
 % verVacio
-	noVacio(Board, Fila, Col):-
-		not(reemplazarBoard("-",Board,Fila,Col,"-",Board)).	
+noVacio(Board, Fila, Col):-
+	not(reemplazarBoard("-",Board,Fila,Col,"-",Board)).	
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
