@@ -6,7 +6,8 @@
 		cascaraEncerrado/5,
 		cascaraBuscarEncierro/5,
 		invertirColor/2,
-		limpiarEncerrado/5
+		limpiarEncerrado/5,
+		noVacio/3
 	]).
 
 % Empiezo a contar de 0 hasta 18 (19 filas x 19 columnas).
