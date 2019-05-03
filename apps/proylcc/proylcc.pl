@@ -5,9 +5,6 @@
 	]).
 % Empiezo a contar de 0 hasta 18 (19 filas x 19 columnas).
 emptyBoard([
-		 ["-","-","-"]]).
-/*
-emptyBoard([
 		 ["-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-"],
 		 ["-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-"],
 		 ["-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-"],
@@ -28,7 +25,7 @@ emptyBoard([
 		 ["-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-"],
 		 ["-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-"]
 		 ]).
-*/
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % goMove(+Board, +Player, +Pos, -RBoard)
@@ -57,35 +54,47 @@ replace(X, XIndex, Y, [Xi|Xs], [Xi|XsY]):-
 %
 % encerrado(+Tablero, +Fila, +Col, +Color, -Lista?(Para evitar ciclos).
 %
+/*
+encerrado(Board, Fila, Col, Color, RBoard):-
 
-encerrado(Board, Fila, Col, Color, Lista):-
 	FilaN is Fila-1,
 	FilaNN is Fila+1,
 	ColN is Col-1,
 	ColNN is Col+1,
-	buscarEncerrado(Board, FilaN, Col, Color, Lista1),
-	buscarEncerrado(Board, Fila, ColN, Color, Lista2),	
-	buscarEncerrado(Board, FilaNN, Col, Color, Lista3),
-	buscarEncerrado(Board, Fila, ColNN, Color, Lista4),
-	borrarTablero(Lista1),
-	borrarTablero(Lista2),
-	borrarTablero(Lista3),
-	borrarTablero(Lista4).
+	borrarTablero(Board, Fila, Col, Color, Tablero0),
+	buscarEncerrado(Tablero0, FilaN, Col, Color, Tablero1),
+	buscarEncerrado(Tablero1, Fila, ColN, Color, Tablero2),	
+	buscarEncerrado(Tablero2, FilaNN, Col, Color, Tablero3),
+	buscarEncerrado(Tablero3, Fila, ColNN, Color, RBoard).
+*/
 		
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % buscarEncerrado
 %
-buscarEncerrado(Board, -1, Col, Color, []).
+buscarEncerrado(Board, -1, Col, Color, Board).
 
-buscarEncerrado(Board, Fila, -1, Color, []).
+buscarEncerrado(Board, Fila, -1, Color, Board).
 
-buscarEncerrado(Board, 19, Col, Color, []).
+buscarEncerrado(Board, 19, Col, Color, Board).
 
-buscarEncerrado(Board, Fila, 19, Color, []).
+buscarEncerrado(Board, Fila, 19, Color, Board).
 
-buscarEncerrado(Board, Fila, Col, Color, []):-
-	verVacio(Board, Fila, Col).
+buscarEncerrado(Board, Fila, Col, Color, Rta):-
+	not(verVacio(Board, Fila, Col)),
+	replace(Board, Fila, Col, Color, Board),
+	FilaN is Fila-1,
+	FilaNN is Fila+1,
+	ColN is Col-1,
+	ColNN is Col+1,
+	replace(Board, Fila, Col, "-", Tablero0),
+	buscarEncerrado(Tablero0, FilaN, Col, Color, Tablero1),
+	buscarEncerrado(Tablero1, Fila, ColN, Color, Tablero2),	
+	buscarEncerrado(Tablero2, FilaNN, Col, Color, Tablero3),
+	buscarEncerrado(Tablero3, Fila, ColNN, Color, RBoard).
+	
+	
+	
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
