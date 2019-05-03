@@ -98,9 +98,11 @@ limpiarEncerrado(Board, Fila, Col, Color, Rta):-
 % verVacio
 	noVacio(Board, Fila, Col):-
 		not(reemplazarBoard("-",Board,Fila,Col,"-",Board)).	
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %TODA LA BASURA QUE NO SIRBE QUEDARA DE ACA EN ADELANTE
-	
+%LUEGO ELIMINAREMOS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % adyacentes(Board, Fila, Col, *[[i, j, c]|....]*).
