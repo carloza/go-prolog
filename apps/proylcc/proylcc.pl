@@ -36,11 +36,17 @@ emptyBoard([
 % goMove(+Board, +Player, +Pos, -RBoard)
 % RBoard es la configuración resultante de reflejar la movida del jugador Player
 % en la posición Pos a partir de la configuración Board.
+	
 goMove(Board, Color, [Fila,Col], RRBoard):-
 	reemplazarBoard("-", Board, Fila, Col, Color, RBoard),
     cascaraEncerrado(RBoard, Fila, Col, Color, RRBoard).
     %not(suicidio(RBoard,Fila,Col,Color)).
-
+	
+goMove(Board, Color, [Fila,Col], RRBoard):-
+	reemplazarBoard("-", Board, Fila, Col, Color, RBoard),
+    cascaraEncerrado(RBoard, Fila, Col, Color, RRBoard).
+    %not(suicidio(RBoard,Fila,Col,Color)).
+	
 %suicidio
 suicidio(Board, Fila, Col, Color):-
 	limpiarEncerrado(Board, Fila, Col, Color, RBoard),
