@@ -39,7 +39,7 @@ emptyBoard([
 goMove(Board, Color, [Fila,Col], RRBoard):-
 	reemplazarBoard("-", Board, Fila, Col, Color, RBoard),
     limpiarAlrededor(RBoard, Fila, Col, Color, RRBoard),
-    not(suicidio(RBoard,Fila,Col,Color)).
+    not(suicidio(RRBoard,Fila,Col,Color)).
 	
 %suicidio
 suicidio(Board, Fila, Col, Color):-
