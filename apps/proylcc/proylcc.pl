@@ -4,7 +4,7 @@
 		goMove/4,
 		reemplazarBoard/6,
 		limpiarAlrededor/5,
-		cascaraEncerrado/5,
+		cascaraLimpiarEncerrado/5,
 		invertirColor/2,
 		encerrado/5,
 		limpiar/4
@@ -38,8 +38,8 @@ emptyBoard([
 % en la posición Pos a partir de la configuración Board.
 goMove(Board, Color, [Fila,Col], RRBoard):-
 	reemplazarBoard("-", Board, Fila, Col, Color, RBoard),
-    limpiarAlrededor(RBoard, Fila, Col, Color, RRBoard).
-    %not(suicidio(RBoard,Fila,Col,Color)).
+    limpiarAlrededor(RBoard, Fila, Col, Color, RRBoard),
+    not(suicidio(RBoard,Fila,Col,Color)).
 	
 %suicidio
 suicidio(Board, Fila, Col, Color):-
@@ -66,19 +66,19 @@ limpiarAlrededor(Board, Fila, Col, Color, RBoard):-
 	ColN is Col-1,
 	ColNN is Col+1,
 	invertirColor(Color,ColorI),
-	cascaraEncerrado(Board, FilaN, Col, ColorI, Board1),
-	cascaraEncerrado(Board1, Fila, ColN, ColorI, Board2),	
-	cascaraEncerrado(Board2, FilaNN, Col, ColorI, Board3),
-	cascaraEncerrado(Board3, Fila, ColNN, ColorI, RBoard).
+	cascaraLimpiarEncerrado(Board, FilaN, Col, ColorI, Board1),
+	cascaraLimpiarEncerrado(Board1, Fila, ColN, ColorI, Board2),	
+	cascaraLimpiarEncerrado(Board2, FilaNN, Col, ColorI, Board3),
+	cascaraLimpiarEncerrado(Board3, Fila, ColNN, ColorI, RBoard).
 
 %invertirColor
 invertirColor("b","w").
 invertirColor("w","b").
 
-% cascaraBuscarEncerrado, si limpiar falla devuelvo el mimso tablero, es decir limpio
-cascaraEncerrado(Board, Fila, Col, Color, Board):- 
+% cascaraBuscarEncerrado, si no esta encerrado devuelvo el mismo tablero
+cascaraLimpiarEncerrado(Board, Fila, Col, Color, Board):- 
 	not(encerrado(Board, Fila, Col, Color, _RBoard)).
-cascaraEncerrado(Board, Fila, Col, Color, RRBoard):-
+cascaraLimpiarEncerrado(Board, Fila, Col, Color, RRBoard):-
 	encerrado(Board, Fila, Col, Color, RBoard),
 	limpiar(RBoard, Fila, Col, RRBoard).
 
@@ -135,48 +135,3 @@ limpiar(Board, Fila, Col, RBoard):-
 	limpiar(Board1, Fila, ColN, Board2),	
 	limpiar(Board2, FilaNN, Col, Board3),
 	limpiar(Board3, Fila, ColNN, RBoard).
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%TODA LA BASURA QUE NO SIRBE QUEDARA DE ACA EN ADELANTE
-%LUEGO ELIMINAREMOS
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-% adyacentes(Board, Fila, Col, *[[i, j, c]|....]*).
-%
-
-
-%adyacentes(Board, Fila, Col, R):-
-
-% encerrado(+Board, +Fila, +Col, +Color, -Lista?(Para evitar ciclos).
-
-/*
-
-% verVacio
-noVacio(Board, Fila, Col):-
-	not(reemplazarBoard("-",Board,Fila,Col,"-",Board)).	
-
-encerrado(Board, Fila, Col, Color, RBoard):-
-
-	FilaN is Fila-1,
-	FilaNN is Fila+1,
-	ColN is Col-1,
-	ColNN is Col+1,
-	borrarBoard(Board, Fila, Col, Color, Board0),
-	encerrado(Board0, FilaN, Col, Color, Board1),
-	encerrado(Board1, Fila, ColN, Color, Board2),	
-	encerrado(Board2, FilaNN, Col, Color, Board3),
-	encerrado(Board3, Fila, ColNN, Color, RBoard).
-
-
-% verVacio
-	verVacio(Board, Fila, Col):-
-		buscar(Board, Fila, NFila),
-		buscar(NFila, Col, "-").
-
-% buscar
-	buscar([L|Ls], 0, L).
-	buscar([L|Ls], N, Rta):-
-		NN is N-1,
-		buscar(Ls, NN, Rta).
-
-*/
