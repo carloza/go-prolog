@@ -3,8 +3,8 @@
 		emptyBoard/1,
 		goMove/4,
 		reemplazarBoard/6,
-		cascaraEncerrado/5,
-		cascaraBuscarEncierro/5,
+		limpiarAlrededor/5,
+		cascaraLimpiarEncerrado/5,
 		invertirColor/2,
 		limpiarEncerrado/5,
 		noVacio/3
@@ -36,15 +36,9 @@ emptyBoard([
 % goMove(+Board, +Player, +Pos, -RBoard)
 % RBoard es la configuración resultante de reflejar la movida del jugador Player
 % en la posición Pos a partir de la configuración Board.
-	
 goMove(Board, Color, [Fila,Col], RRBoard):-
 	reemplazarBoard("-", Board, Fila, Col, Color, RBoard),
-    cascaraEncerrado(RBoard, Fila, Col, Color, RRBoard).
-    %not(suicidio(RBoard,Fila,Col,Color)).
-	
-goMove(Board, Color, [Fila,Col], RRBoard):-
-	reemplazarBoard("-", Board, Fila, Col, Color, RBoard),
-    cascaraEncerrado(RBoard, Fila, Col, Color, RRBoard).
+    limpiarAlrededor(RBoard, Fila, Col, Color, RRBoard).
     %not(suicidio(RBoard,Fila,Col,Color)).
 	
 %suicidio
@@ -65,26 +59,26 @@ replace(X, XIndex, Y, [Xi|Xs], [Xi|XsY]):-
     XIndexS is XIndex - 1,
     replace(X, XIndexS, Y, Xs, XsY).
 
-%cascaraEncerrado
-cascaraEncerrado(Board, Fila, Col, Color, RBoard):-
+%limpiarAlrededor
+limpiarAlrededor(Board, Fila, Col, Color, RBoard):-
 	FilaN is Fila-1,
 	FilaNN is Fila+1,
 	ColN is Col-1,
 	ColNN is Col+1,
 	invertirColor(Color,ColorI),
-	cascaraBuscarEncierro(Board, FilaN, Col, ColorI, Board1),
-	cascaraBuscarEncierro(Board1, Fila, ColN, ColorI, Board2),	
-	cascaraBuscarEncierro(Board2, FilaNN, Col, ColorI, Board3),
-	cascaraBuscarEncierro(Board3, Fila, ColNN, ColorI, RBoard).
+	cascaraLimpiarEncerrado(Board, FilaN, Col, ColorI, Board1),
+	cascaraLimpiarEncerrado(Board1, Fila, ColN, ColorI, Board2),	
+	cascaraLimpiarEncerrado(Board2, FilaNN, Col, ColorI, Board3),
+	cascaraLimpiarEncerrado(Board3, Fila, ColNN, ColorI, RBoard).
 
 %invertirColor
 invertirColor("b","w").
 invertirColor("w","b").
 
 % cascaraBuscarEncerrado, si limpiar falla devuelvo el mimso tablero, es decir limpio
-cascaraBuscarEncierro(Board, R, C, Color, Board):- 
+cascaraLimpiarEncerrado(Board, R, C, Color, Board):- 
 	not(limpiarEncerrado(Board, R, C, Color, _RBoard)).
-cascaraBuscarEncierro(Board, Fila, Col, Color, RBoard):-
+cascaraLimpiarEncerrado(Board, Fila, Col, Color, RBoard):-
 	limpiarEncerrado(Board, Fila, Col, Color, RBoard).
 
 
@@ -116,6 +110,7 @@ limpiarEncerrado(Board, Fila, Col, Color, RBoard):-
 	limpiarEncerrado(Board2, FilaNN, Col, Color, Board3),
 	limpiarEncerrado(Board3, Fila, ColNN, Color, RRBoard),
 
+	% el problema es la siguiente linea, cuando se supone que va limpiando a la vuelta
 	reemplazarBoard("l", RRBoard, Fila, Col, "-", RBoard).
 
 % verVacio
