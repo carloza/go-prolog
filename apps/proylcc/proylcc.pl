@@ -4,10 +4,10 @@
 		goMove/4,
 		reemplazarBoard/6,
 		limpiarAlrededor/5,
-		cascaraLimpiarEncerrado/5,
+		cascaraEncerrado/5,
 		invertirColor/2,
-		limpiarEncerrado/5,
-		noVacio/3
+		encerrado/5,
+		limpiar/4
 	]).
 
 % Empiezo a contar de 0 hasta 18 (19 filas x 19 columnas).
@@ -43,7 +43,7 @@ goMove(Board, Color, [Fila,Col], RRBoard):-
 	
 %suicidio
 suicidio(Board, Fila, Col, Color):-
-	limpiarEncerrado(Board, Fila, Col, Color, RBoard),
+	encerrado(Board, Fila, Col, Color, RBoard),
 	Board \== RBoard.
 
 %reemplazarBoard
@@ -66,57 +66,75 @@ limpiarAlrededor(Board, Fila, Col, Color, RBoard):-
 	ColN is Col-1,
 	ColNN is Col+1,
 	invertirColor(Color,ColorI),
-	cascaraLimpiarEncerrado(Board, FilaN, Col, ColorI, Board1),
-	cascaraLimpiarEncerrado(Board1, Fila, ColN, ColorI, Board2),	
-	cascaraLimpiarEncerrado(Board2, FilaNN, Col, ColorI, Board3),
-	cascaraLimpiarEncerrado(Board3, Fila, ColNN, ColorI, RBoard).
+	cascaraEncerrado(Board, FilaN, Col, ColorI, Board1),
+	cascaraEncerrado(Board1, Fila, ColN, ColorI, Board2),	
+	cascaraEncerrado(Board2, FilaNN, Col, ColorI, Board3),
+	cascaraEncerrado(Board3, Fila, ColNN, ColorI, RBoard).
 
 %invertirColor
 invertirColor("b","w").
 invertirColor("w","b").
 
 % cascaraBuscarEncerrado, si limpiar falla devuelvo el mimso tablero, es decir limpio
-cascaraLimpiarEncerrado(Board, R, C, Color, Board):- 
-	not(limpiarEncerrado(Board, R, C, Color, _RBoard)).
-cascaraLimpiarEncerrado(Board, Fila, Col, Color, RBoard):-
-	limpiarEncerrado(Board, Fila, Col, Color, RBoard).
+cascaraEncerrado(Board, Fila, Col, Color, Board):- 
+	not(encerrado(Board, Fila, Col, Color, _RBoard)).
+cascaraEncerrado(Board, Fila, Col, Color, RRBoard):-
+	encerrado(Board, Fila, Col, Color, RBoard),
+	limpiar(RBoard, Fila, Col, RRBoard).
 
 
-%estos son los caso donde me caigo del Tablero, no deberia moficar el Board
-limpiarEncerrado(Board, -1, _Col, _Color, Board).
-limpiarEncerrado(Board, _Fila, -1, _Color, Board).
-limpiarEncerrado(Board, 19, _Col, _Color, Board).
-limpiarEncerrado(Board, _Fila, 19, _Color, Board).
-%este es otro caso donde el color de la ficha es de otro color al que estoy limpiando
-limpiarEncerrado(Board, Fila, Col, Color, Board):-
+%estos son los caso donde me caigo del Tablero, no deberia moficar el Tablero
+encerrado(Board, -1, _Col, _Color, Board).
+encerrado(Board, _Fila, -1, _Color, Board).
+encerrado(Board, 19, _Col, _Color, Board).
+encerrado(Board, _Fila, 19, _Color, Board).
+%este es otro caso donde el color de la ficha es de otro color al que estoy buscando
+encerrado(Board, Fila, Col, Color, Board):-
 	invertirColor(Color, ColorI),
 	reemplazarBoard(ColorI, Board, Fila, Col, ColorI, Board).
-
-limpiarEncerrado(Board, Fila, Col, _Color, Board):-
-	reemplazarBoard("l", Board, Fila, Col, "l", Board).
+%este es el caso donde la ficha ya esta visitada
+encerrado(Board, Fila, Col, _Color, Board):-
+	reemplazarBoard("v", Board, Fila, Col, "v", Board).
 %caso general
-limpiarEncerrado(Board, Fila, Col, Color, RBoard):-
-	%noVacio(Board, Fila, Col), %aca verifico que esa celda no es vacia (si fuera vacia no estaria encerrada)
-	%reemplazarBoard( _, Board, Fila, Col, Color, Board), %miro que sea el color que venia limpiando
-	reemplazarBoard(Color, Board, Fila, Col, "l", Board0), %aca efectivamente la limpio (es decir coloco un vacio)
-														   %tambien verificaria si es del color que venia cambiando
-	%de aca en adelante limpio las de alrededor
+encerrado(Board, Fila, Col, Color, RBoard):-
+	%aca la dejo visitada
+	reemplazarBoard(Color, Board, Fila, Col, "v", Board0), 
+	%de aca en adelante visito las de alrededor
 	FilaN is Fila-1,
 	FilaNN is Fila+1,
 	ColN is Col-1,
 	ColNN is Col+1,
-	limpiarEncerrado(Board0, FilaN, Col, Color, Board1),
-	limpiarEncerrado(Board1, Fila, ColN, Color, Board2),	
-	limpiarEncerrado(Board2, FilaNN, Col, Color, Board3),
-	limpiarEncerrado(Board3, Fila, ColNN, Color, RRBoard),
+	encerrado(Board0, FilaN, Col, Color, Board1),
+	encerrado(Board1, Fila, ColN, Color, Board2),	
+	encerrado(Board2, FilaNN, Col, Color, Board3),
+	encerrado(Board3, Fila, ColNN, Color, RBoard).
 
-	% el problema es la siguiente linea, cuando se supone que va limpiando a la vuelta
-	reemplazarBoard("l", RRBoard, Fila, Col, "-", RBoard).
-
-% verVacio
-noVacio(Board, Fila, Col):-
-	not(reemplazarBoard("-",Board,Fila,Col,"-",Board)).	
-
+%estos son los caso donde me caigo del Tablero, no deberia moficar el Tablero
+limpiar(Board, -1, _Col, Board).
+limpiar(Board, _Fila, -1, Board).
+limpiar(Board, 19, _Col, Board).
+limpiar(Board, _Fila, 19, Board).
+%este es otro caso donde la ficha no es una visitada
+limpiar(Board, Fila, Col, Board):-
+	reemplazarBoard("b", Board, Fila, Col, "b", Board).
+limpiar(Board, Fila, Col, Board):-
+	reemplazarBoard("w", Board, Fila, Col, "w", Board).
+%este es el caso donde la ficha ya fue limpiada
+limpiar(Board, Fila, Col, Board):-
+	reemplazarBoard("-", Board, Fila, Col, "-", Board).
+%caso general
+limpiar(Board, Fila, Col, RBoard):-
+	%aca la dejo visitada
+	reemplazarBoard("v", Board, Fila, Col, "-", Board0), 
+	%de aca en adelante visito las de alrededor
+	FilaN is Fila-1,
+	FilaNN is Fila+1,
+	ColN is Col-1,
+	ColNN is Col+1,
+	limpiar(Board0, FilaN, Col, Board1),
+	limpiar(Board1, Fila, ColN, Board2),	
+	limpiar(Board2, FilaNN, Col, Board3),
+	limpiar(Board3, Fila, ColNN, RBoard).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %TODA LA BASURA QUE NO SIRBE QUEDARA DE ACA EN ADELANTE
@@ -132,6 +150,11 @@ noVacio(Board, Fila, Col):-
 % encerrado(+Board, +Fila, +Col, +Color, -Lista?(Para evitar ciclos).
 
 /*
+
+% verVacio
+noVacio(Board, Fila, Col):-
+	not(reemplazarBoard("-",Board,Fila,Col,"-",Board)).	
+
 encerrado(Board, Fila, Col, Color, RBoard):-
 
 	FilaN is Fila-1,
@@ -139,10 +162,10 @@ encerrado(Board, Fila, Col, Color, RBoard):-
 	ColN is Col-1,
 	ColNN is Col+1,
 	borrarBoard(Board, Fila, Col, Color, Board0),
-	limpiarEncerrado(Board0, FilaN, Col, Color, Board1),
-	limpiarEncerrado(Board1, Fila, ColN, Color, Board2),	
-	limpiarEncerrado(Board2, FilaNN, Col, Color, Board3),
-	limpiarEncerrado(Board3, Fila, ColNN, Color, RBoard).
+	encerrado(Board0, FilaN, Col, Color, Board1),
+	encerrado(Board1, Fila, ColN, Color, Board2),	
+	encerrado(Board2, FilaNN, Col, Color, Board3),
+	encerrado(Board3, Fila, ColNN, Color, RBoard).
 
 
 % verVacio
