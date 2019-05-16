@@ -12,8 +12,8 @@ var latestStone;
 //variable para ver si ya pasaron una vez
 var passTurn = false;
 var quienLlamo = "";
-
-
+//variable de debuggeo
+var debug = false;
 
 /**
 * Initialization function. Requests to server, through pengines.js library, 
@@ -83,8 +83,7 @@ function handleSuccess(response) {
         for (let row = 0; row < gridData.length; row++){
             for (let col = 0; col < gridData[row].length; col++) {
                 cellElems[row][col].className = "gridCell" +
-                    (gridData[row][col] === "w" ? " stoneWhite" : gridData[row][col] === "b" ? " stoneBlack" : "") +
-                    (latestStone && row === latestStone[0] && col === latestStone[1] ? " latest" : "");
+                    (gridData[row][col] === "w" ? " stoneWhite" : gridData[row][col] === "b" ? " stoneBlack" : "") + (latestStone && row === latestStone[0] && col === latestStone[1] ? " latest" : "");
             }
         }
         switchTurn();
@@ -92,10 +91,12 @@ function handleSuccess(response) {
     if(quienLlamo === "finPartida"){
         //aca actuo despues de haber consultado para ver al ganador
     }
+    if(debug) alert("pase1");
     if(quienLlamo === "contarFichas"){
         //aca miro cuantas fichas tengo de cada color, por el momento esto es de prueba
-        const cantBlancas = response.data[0].CantBlancas;
-        const cantNegras = response.data[0].CantNegras;
+        var cantBlancas = response.data[0].CantBlancas;
+        var cantNegras = response.data[0].CantNegras;
+        //alert("cantBlancas");
         alert("el jugador blanco colocó " + cantBlancas + " fichas y el juagaor negro colocó " + cantNegras + " fichas");
     }
     
@@ -144,15 +145,16 @@ function pasarTurno(){
 }
 
 function finPartida(){
-    quienLlamo = "finPartida"
-    const s = "string para ver quien ganó"
+    quienLlamo = "finPartida";
+    const s = "string para ver quien ganó";
     pengine.ask(s);
 }
 
 function contarFichas(){
     quienLlamo = "contarFichas";
-    const s = "contarFichas(" + Pengine.stringify(gridData) + "CantBlancas,CantNegras)";
+    const s = "contarFichas(" + Pengine.stringify(gridData) + ",CantBlancas,CantNegras)";
     pengine.ask(s);
+    if(debug) alert(s);
 }
 
 /**
