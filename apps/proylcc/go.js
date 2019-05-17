@@ -148,13 +148,14 @@ function pasarTurno(){
     else{
         alert("juego finalizado");
         //aca consulto quien es el ganador
-        //finPartida();
+        finPartida();
     }
 }
 
 function finPartida(){
     quienLlamo = "finPartida";
-    const s = "string para ver quien ganó";
+    const s = "contarFichas(" + Pengine.stringify(gridData) + ",CantBlancas,CantNegras)";
+    if(debug) alert(s);
     pengine.ask(s);
 }
 
