@@ -4,13 +4,12 @@
 		goMove/4,
 		reemplazarBoard/6,
 		limpiarAlrededor/5,
-		cascaraLimpiarEncerrado/5,
+		cascaraLimpiarEncerrado/6,
 		invertirColor/2,
-		encerrado/5,
-		limpiar/4,
+		encerrado/7,
 		contarFichas/3,
-		contarCol/3,
-		contarFila/3
+		contarEnCol/3,
+		contarEnFila/3
 	]).
 
 % Empiezo a contar de 0 hasta 18 (19 filas x 19 columnas).
@@ -48,7 +47,8 @@ goMove(Board, Color, [Fila,Col], RRBoard):-
 
 %suicidio
 suicidio(Board, Fila, Col, Color):-
-	encerrado(Board, Fila, Col, Color, RBoard),
+	invertirColor(Color, ColorI),
+	encerrado(Board, Fila, Col, ColorI, Color, "v", RBoard),
 	Board \== RBoard.
 
 
@@ -73,10 +73,10 @@ limpiarAlrededor(Board, Fila, Col, Color, RBoard):-
 	ColN is Col-1,
 	ColNN is Col+1,
 	invertirColor(Color,ColorI),
-	cascaraLimpiarEncerrado(Board, FilaN, Col, ColorI, Board1),
-	cascaraLimpiarEncerrado(Board1, Fila, ColN, ColorI, Board2),	
-	cascaraLimpiarEncerrado(Board2, FilaNN, Col, ColorI, Board3),
-	cascaraLimpiarEncerrado(Board3, Fila, ColNN, ColorI, RBoard).
+	cascaraLimpiarEncerrado(Board, FilaN, Col, Color, ColorI, Board1),
+	cascaraLimpiarEncerrado(Board1, Fila, ColN, Color, ColorI, Board2),	
+	cascaraLimpiarEncerrado(Board2, FilaNN, Col, Color, ColorI, Board3),
+	cascaraLimpiarEncerrado(Board3, Fila, ColNN, Color, ColorI, RBoard).
 
 
 %invertirColor
@@ -85,84 +85,60 @@ invertirColor("w","b").
 
 
 % cascaraBuscarEncerrado, si no esta encerrado devuelvo el mismo tablero
-cascaraLimpiarEncerrado(Board, Fila, Col, Color, Board):- 
-	not(encerrado(Board, Fila, Col, Color, _RBoard)).
-cascaraLimpiarEncerrado(Board, Fila, Col, Color, RRBoard):-
-	encerrado(Board, Fila, Col, Color, RBoard),
-	limpiar(RBoard, Fila, Col, RRBoard).
+cascaraLimpiarEncerrado(Board, Fila, Col, ColorE, ColorV, Board):- 
+	not(encerrado(Board, Fila, Col, ColorE, ColorV, "v", _RBoard)).
+cascaraLimpiarEncerrado(Board, Fila, Col, ColorE, ColorV, RRBoard):-
+	encerrado(Board, Fila, Col, ColorE, ColorV, "v", RBoard),
+	%limpiar
+	encerrado(RBoard, Fila, Col, ColorE, "v", "-", RRBoard).
 
-
-%estos son los caso donde me caigo del Tablero, no deberia moficar el Tablero
-encerrado(Board, -1, _Col, _Color, Board).
-encerrado(Board, _Fila, -1, _Color, Board).
-encerrado(Board, 19, _Col, _Color, Board).
-encerrado(Board, _Fila, 19, _Color, Board).
-%este es otro caso donde el color de la ficha es de otro color al que estoy buscando
-encerrado(Board, Fila, Col, Color, Board):-
-	invertirColor(Color, ColorI),
-	reemplazarBoard(ColorI, Board, Fila, Col, ColorI, Board).
+%Board
+%Fila
+%Col
+%ColorE Encerrador
+%ColorV Vistima
+%ColorR color de reemplazo
+%BoardSalida
+%este es el caso donde me caigo del tablero
+encerrado(Board, -1, _Col, _ColorE, _ColorV, _ColorR, Board).
+encerrado(Board, _Fila, -1, _ColorE, _ColorV, _ColorR, Board).
+encerrado(Board, 19, _Col, _ColorE, _ColorV, _ColorR, Board).
+encerrado(Board, _Fila, 19, _ColorE, _ColorV, _ColorR, Board).
+%este caso es donde el color de la ficha es del color encerrador
+encerrado(Board, Fila, Col, ColorE, _ColorV, _ColorR, Board):-
+	reemplazarBoard(ColorE, Board, Fila, Col, ColorE, Board).
 %este es el caso donde la ficha ya esta visitada
-encerrado(Board, Fila, Col, _Color, Board):-
-	reemplazarBoard("v", Board, Fila, Col, "v", Board).
+encerrado(Board, Fila, Col, _ColorE, _ColorV, ColorR, Board):-
+	reemplazarBoard(ColorR, Board, Fila, Col, ColorR, Board).
 %caso general
-encerrado(Board, Fila, Col, Color, RBoard):-
+encerrado(Board, Fila, Col, ColorE, ColorV, ColorR, RBoard):-
 	%aca la dejo visitada
-	reemplazarBoard(Color, Board, Fila, Col, "v", Board0), 
+	reemplazarBoard(ColorV, Board, Fila, Col, ColorR, Board0), 
 	%de aca en adelante visito las de alrededor
 	FilaN is Fila-1,
 	FilaNN is Fila+1,
 	ColN is Col-1,
 	ColNN is Col+1,
-	encerrado(Board0, FilaN, Col, Color, Board1),
-	encerrado(Board1, Fila, ColN, Color, Board2),	
-	encerrado(Board2, FilaNN, Col, Color, Board3),
-	encerrado(Board3, Fila, ColNN, Color, RBoard).
-
-
-%estos son los caso donde me caigo del Tablero, no deberia moficar el Tablero
-limpiar(Board, -1, _Col, Board).
-limpiar(Board, _Fila, -1, Board).
-limpiar(Board, 19, _Col, Board).
-limpiar(Board, _Fila, 19, Board).
-%este es otro caso donde la ficha no es una visitada
-limpiar(Board, Fila, Col, Board):-
-	reemplazarBoard("b", Board, Fila, Col, "b", Board).
-limpiar(Board, Fila, Col, Board):-
-	reemplazarBoard("w", Board, Fila, Col, "w", Board).
-%este es el caso donde la ficha ya fue limpiada
-limpiar(Board, Fila, Col, Board):-
-	reemplazarBoard("-", Board, Fila, Col, "-", Board).
-%caso general
-limpiar(Board, Fila, Col, RBoard):-
-	%aca la dejo visitada
-	reemplazarBoard("v", Board, Fila, Col, "-", Board0), 
-	%de aca en adelante visito las de alrededor
-	FilaN is Fila-1,
-	FilaNN is Fila+1,
-	ColN is Col-1,
-	ColNN is Col+1,
-	limpiar(Board0, FilaN, Col, Board1),
-	limpiar(Board1, Fila, ColN, Board2),	
-	limpiar(Board2, FilaNN, Col, Board3),
-	limpiar(Board3, Fila, ColNN, RBoard).
-
+	encerrado(Board0, FilaN, Col, ColorE, ColorV, ColorR, Board1),
+	encerrado(Board1, Fila, ColN, ColorE, ColorV, ColorR, Board2),	
+	encerrado(Board2, FilaNN, Col, ColorE, ColorV, ColorR, Board3),
+	encerrado(Board3, Fila, ColNN, ColorE, ColorV, ColorR, RBoard).
 
 %cuento la cantidad de fichas negras y blancas
 contarFichas(Board, CantBlancas, CantNegras):-
-	contarCol(Board, "w", CantBlancas),
-	contarCol(Board, "b", CantNegras).
+	contarEnCol(Board, "w", CantBlancas),
+	contarEnCol(Board, "b", CantNegras).
 
-contarCol([], _Color, 0).
-contarCol([F|Bs], Color, Rta):-
-	contarFila(F, Color, Rtaa),
-	contarCol(Bs, Color, Rtab),
+contarEnCol([], _Color, 0).
+contarEnCol([F|Bs], Color, Rta):-
+	contarEnFila(F, Color, Rtaa),
+	contarEnCol(Bs, Color, Rtab),
 	Rta is Rtaa + Rtab.
 
-contarFila([], _Color, 0).
-contarFila([Color|Ls], Color, Rta):-
-	contarFila(Ls, Color, Rtaa),
+contarEnFila([], _Color, 0).
+contarEnFila([Color|Ls], Color, Rta):-
+	contarEnFila(Ls, Color, Rtaa),
 	Rta is Rtaa +1.
-contarFila([X|Ls], Color, Rta):-
+contarEnFila([X|Ls], Color, Rta):-
 	X \= Color,
-	contarFila(Ls, Color, Rta).
-
+	contarEnFila(Ls, Color, Rta).	

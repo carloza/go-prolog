@@ -91,13 +91,14 @@ function handleSuccess(response) {
     if(quienLlamo === "finPartida"){
         //aca actuo despues de haber consultado para ver al ganador
     }
-    if(debug) alert("pase1");
+    
     if(quienLlamo === "contarFichas"){
+        if(debug) alert("pase1");
         //aca miro cuantas fichas tengo de cada color, por el momento esto es de prueba
         var cantBlancas = response.data[0].CantBlancas;
         var cantNegras = response.data[0].CantNegras;
-        //alert("cantBlancas");
-        alert("el jugador blanco colocó " + cantBlancas + " fichas y el juagaor negro colocó " + cantNegras + " fichas");
+        //if(debug) alert("cantBlancas");
+        alert("el jugador blanco colocó " + cantBlancas + " fichas y el jugador negro colocó " + cantNegras + " fichas");
     }
     
 }
@@ -117,7 +118,7 @@ function handleFailure() {
 function handleClick(row, col) {
     quienLlamo = "fichaColocada";
     const s = "goMove(" + Pengine.stringify(gridData) + "," + Pengine.stringify(turnBlack ? "b" : "w") + "," + "[" + row + "," + col + "]" + ",Board)";
-    //alert(s);
+    if(debug) alert(s);
     pengine.ask(s);
     latestStone = [row, col];
     passTurn = false;
@@ -153,8 +154,8 @@ function finPartida(){
 function contarFichas(){
     quienLlamo = "contarFichas";
     const s = "contarFichas(" + Pengine.stringify(gridData) + ",CantBlancas,CantNegras)";
-    pengine.ask(s);
     if(debug) alert(s);
+    pengine.ask(s);
 }
 
 /**
