@@ -9,7 +9,10 @@
 		encerrado/7,
 		contarFichas/3,
 		contarEnCol/3,
-		contarEnFila/3
+		contarEnFila/3,
+		rellenarCol/5,
+		rellenarFila/5,
+		cascaraEncerrarVacio/5
 	]).
 
 % Empiezo a contar de 0 hasta 18 (19 filas x 19 columnas).
@@ -84,7 +87,7 @@ invertirColor("b","w").
 invertirColor("w","b").
 
 
-% cascaraBuscarEncerrado, si no esta encerrado devuelvo el mismo tablero
+% si no esta encerrado devuelvo el mismo tablero
 cascaraLimpiarEncerrado(Board, Fila, Col, ColorE, ColorV, Board):- 
 	not(encerrado(Board, Fila, Col, ColorE, ColorV, "v", _RBoard)).
 cascaraLimpiarEncerrado(Board, Fila, Col, ColorE, ColorV, RRBoard):-
@@ -92,13 +95,14 @@ cascaraLimpiarEncerrado(Board, Fila, Col, ColorE, ColorV, RRBoard):-
 	%limpiar
 	encerrado(RBoard, Fila, Col, ColorE, "v", "-", RRBoard).
 
-%Board
+
+%Board tablero de entrada
 %Fila
 %Col
 %ColorE Encerrador
 %ColorV Vistima
 %ColorR color de reemplazo
-%BoardSalida
+%BoardSalida tablero de salida
 %este es el caso donde me caigo del tablero
 encerrado(Board, -1, _Col, _ColorE, _ColorV, _ColorR, Board).
 encerrado(Board, _Fila, -1, _ColorE, _ColorV, _ColorR, Board).
@@ -124,10 +128,13 @@ encerrado(Board, Fila, Col, ColorE, ColorV, ColorR, RBoard):-
 	encerrado(Board2, FilaNN, Col, ColorE, ColorV, ColorR, Board3),
 	encerrado(Board3, Fila, ColNN, ColorE, ColorV, ColorR, RBoard).
 
+
 %cuento la cantidad de fichas negras y blancas
 contarFichas(Board, CantBlancas, CantNegras):-
-	contarEnCol(Board, "w", CantBlancas),
-	contarEnCol(Board, "b", CantNegras).
+	rellenarCol(Board, 18, 18, "w", RBoardB),
+	contarEnCol(RBoardB, "w", CantBlancas),
+	rellenarCol(Board, 18, 18, "b", RBoardN),
+	contarEnCol(RBoardN, "b", CantNegras).
 
 contarEnCol([], _Color, 0).
 contarEnCol([F|Bs], Color, Rta):-
@@ -142,3 +149,21 @@ contarEnFila([Color|Ls], Color, Rta):-
 contarEnFila([X|Ls], Color, Rta):-
 	X \= Color,
 	contarEnFila(Ls, Color, Rta).	
+
+rellenarCol(Board, _Fila, -1, _Color, Board).
+rellenarCol(Board, Fila, Col, Color, RBoard):-
+	NCol is Col - 1,
+	rellenarFila(Board, Fila, Col, Color, RRBoard),
+	rellenarCol(RRBoard, Fila, NCol, Color, RBoard).
+
+rellenarFila(Board, -1, _Col, _Color, Board).
+rellenarFila(Board, Fila, Col, Color, RBoard):-
+	NFila is Fila - 1,
+	cascaraEncerrarVacio(Board, Fila, Col, Color, RRBoard),
+	rellenarFila(RRBoard, NFila, Col, Color, RBoard).
+
+cascaraEncerrarVacio(Board, Fila, Col, Color, Board):-
+	not(encerrado(Board, Fila, Col, Color, "-", Color, _RBoard)).
+cascaraEncerrarVacio(Board, Fila, Col, Color, RBoard):-
+	encerrado(Board, Fila, Col, Color, "-", Color, RBoard).
+	

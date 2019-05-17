@@ -98,7 +98,7 @@ function handleSuccess(response) {
         var cantBlancas = response.data[0].CantBlancas;
         var cantNegras = response.data[0].CantNegras;
         //if(debug) alert("cantBlancas");
-        alert("el jugador blanco colocó " + cantBlancas + " fichas y el jugador negro colocó " + cantNegras + " fichas");
+        alert("el jugador blanco tiene " + cantBlancas + " puntos y el jugador negro tiene " + cantNegras + " puntos");
     }
     
 }
