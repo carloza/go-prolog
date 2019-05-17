@@ -95,7 +95,7 @@ cascaraLimpiarEncerrado(Board, Fila, Col, ColorE, ColorV, RRBoard):-
 	%limpiar
 	encerrado(RBoard, Fila, Col, ColorE, "v", "-", RRBoard).
 
-
+%
 %Board tablero de entrada
 %Fila
 %Col
