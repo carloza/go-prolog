@@ -104,19 +104,20 @@ cascaraLimpiarEncerrado(Board, Fila, Col, ColorE, ColorV, RRBoard):-
 %ColorR color de reemplazo
 %BoardSalida tablero de salida
 %este es el caso donde me caigo del tablero
-encerrado(Board, -1, _Col, _ColorE, _ColorV, _ColorR, Board).
-encerrado(Board, _Fila, -1, _ColorE, _ColorV, _ColorR, Board).
-encerrado(Board, 19, _Col, _ColorE, _ColorV, _ColorR, Board).
-encerrado(Board, _Fila, 19, _ColorE, _ColorV, _ColorR, Board).
+encerrado(Board, -1, _Col, _ColorE, _ColorV, _ColorR, Board):-!.
+encerrado(Board, _Fila, -1, _ColorE, _ColorV, _ColorR, Board):-!.
+encerrado(Board, 19, _Col, _ColorE, _ColorV, _ColorR, Board):-!.
+encerrado(Board, _Fila, 19, _ColorE, _ColorV, _ColorR, Board):-!.
 %este caso es donde el color de la ficha es del color encerrador
 encerrado(Board, Fila, Col, ColorE, _ColorV, _ColorR, Board):-
-	reemplazarBoard(ColorE, Board, Fila, Col, ColorE, Board).
+	reemplazarBoard(ColorE, Board, Fila, Col, ColorE, Board),!.
 %este es el caso donde la ficha ya esta visitada
 encerrado(Board, Fila, Col, _ColorE, _ColorV, ColorR, Board):-
-	reemplazarBoard(ColorR, Board, Fila, Col, ColorR, Board).
+	reemplazarBoard(ColorR, Board, Fila, Col, ColorR, Board),!.
 %caso general
 encerrado(Board, Fila, Col, ColorE, ColorV, ColorR, RBoard):-
 	%aca la dejo visitada
+	!,
 	reemplazarBoard(ColorV, Board, Fila, Col, ColorR, Board0), 
 	%de aca en adelante visito las de alrededor
 	FilaN is Fila-1,
