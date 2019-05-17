@@ -90,6 +90,13 @@ function handleSuccess(response) {
     }
     if(quienLlamo === "finPartida"){
         //aca actuo despues de haber consultado para ver al ganador
+        var cantBlancas = response.data[0].CantBlancas;
+        var cantNegras = response.data[0].CantNegras;
+        var ganador = cantBlancas<cantNegras ? "negro" : "blanco";
+        var cantGanador = cantBlancas<cantNegras ? cantNegras : cantBlancas;
+        alert("el jugador "+ ganador + " es el ganador con " + cantGanador + " puntos");
+        alert("Se va acargar una nueva partida");
+        handleCreate();
     }
     
     if(quienLlamo === "contarFichas"){
