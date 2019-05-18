@@ -71,6 +71,7 @@ function createBoard() {
 function handleCreate() {
     quienLlamo = "fichaColocada"
     pengine.ask('emptyBoard(Board)');
+	turnBlack = false;
 }
 
 /**
@@ -94,8 +95,8 @@ function handleSuccess(response) {
         var cantNegras = response.data[0].CantNegras;
         var ganador = cantBlancas<cantNegras ? "negro" : "blanco";
         var cantGanador = cantBlancas<cantNegras ? cantNegras : cantBlancas;
-        alert("el jugador "+ ganador + " es el ganador con " + cantGanador + " puntos");
-        alert("Se va acargar una nueva partida");
+        alert("El jugador "+ ganador + " es el ganador con " + cantGanador + " puntos.");
+        alert("Se va acargar una nueva partida.");
         handleCreate();
     }
     
@@ -105,7 +106,7 @@ function handleSuccess(response) {
         var cantBlancas = response.data[0].CantBlancas;
         var cantNegras = response.data[0].CantNegras;
         //if(debug) alert("cantBlancas");
-        alert("el jugador blanco tiene " + cantBlancas + " puntos y el jugador negro tiene " + cantNegras + " puntos");
+        alert("El jugador blanco tiene " + cantBlancas + " puntos y el jugador negro tiene " + cantNegras + " puntos.");
     }
     
 }
@@ -115,7 +116,7 @@ function handleSuccess(response) {
  */
 
 function handleFailure() {
-    alert("Invalid move!");
+    alert("Movimiento Invalido!");
 }
 
 /**
@@ -136,17 +137,13 @@ function switchTurn() {
     bodyElem.className = turnBlack ? "turnBlack" : "turnWhite";
 }
 
-function probando(){
-    alert("boton de prueba");
-}
-
 function pasarTurno(){
     if(!passTurn){
         passTurn = true;
         switchTurn();
     }
     else{
-        alert("juego finalizado");
+        alert("Juego finalizado.");
         //aca consulto quien es el ganador
         finPartida();
     }
@@ -154,6 +151,7 @@ function pasarTurno(){
 
 function finPartida(){
     quienLlamo = "finPartida";
+	passTurn = false;
     const s = "contarFichas(" + Pengine.stringify(gridData) + ",CantBlancas,CantNegras)";
     if(debug) alert(s);
     pengine.ask(s);
