@@ -9,7 +9,7 @@ donde se podra jugar al juego de mesa go
 
 Para correr el servidor necesitaras:
 
-  * Tener instalado el interprete SWI-Prolog](http://www.swi-prolog.org)
+  * Tener instalado el interprete [SWI-Prolog](http://www.swi-prolog.org)
   * Un web-browser (cualquier de su preferencia)
 
 ### Instalacion
@@ -27,7 +27,7 @@ para usurio de windows navergar hasta la carpeta clonada y ejecutar run.pl
 
 el servidor escuchara el puerto local 3030: http://localhost:3030/apps/proylcc/go.html
 
-###Para mas informacion
+### Para mas informacion
 
 [SWI-Prolog](http://www.swi-prolog.org)
 [pengines package](http://www.swi-prolog.org/pldoc/doc_for?object=section%28%27packages/pengines.html%27%29).
