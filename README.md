@@ -16,12 +16,12 @@ Para correr el servidor necesitaras:
 
 Para instalar el servidor primeramente debe clonarlo:
 
-  git clone https://github.com/carloza/go-prolog.git
+    git clone https://github.com/carloza/go-prolog.git
 
 luego para ponerlo en funcionamiento:
 
-  cd go-prolog
-  swipl run.pl
+    cd go-prolog
+    swipl run.pl
 
 para usurio de windows navergar hasta la carpeta clonada y ejecutar run.pl
 
