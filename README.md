@@ -3,6 +3,8 @@
 Este es un proyecto para la materia LCC, consta de una pagina web local
 donde se podra jugar al juego de mesa go
 
+![Portada](https://user-images.githubusercontent.com/11465860/57962153-5aa5b380-78ea-11e9-956f-6f4d3132f461.png)
+
 ### Requisito
 
 Para correr el servidor necesitaras:
