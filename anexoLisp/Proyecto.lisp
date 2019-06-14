@@ -11,7 +11,8 @@
 )
 
 ;Funcion cdrs
-;Similar a la funcion cars pero..........
+;Similar a la funcion cars pero en vez de obtener las cabeza de las listas
+;obiene una lista con las colas de todas las sublista de M
 (DEFUN cdrs (M)
 	(COND 
 		((NULL M) NIL)
@@ -20,11 +21,17 @@
 )
 
 ;Funcion esMatriz Cascara 
+; funcion para corroborar que una lista de listas tenga forma de matriz
 (DEFUN esMatrix(M)
 	(esMatrixC (Longitud(CAR M)) M)
 )
 
 ;Funcion esMatriz
+;esta funcion tine sentido si es llamada desde esMatrixC
+;lo que hace es verificar que todas las sublistas de M
+;tengan el largo N, N es ingresado por parametro, y 
+;corresponderia con el largo de la primer lista y si es
+;matriz las demas listas deberian tener el mismo largo tambien
 (DEFUN esMatrixC (N M)
 	(COND
 		((NULL M)
@@ -39,6 +46,9 @@
 )
 
 ;Funcion transC.
+;esta es la funcion que obtiene la matriz transpuesta de M
+;lo que hace es obtener la primer columna con cars y llama
+;recursivamente con cdrs para obtener las demas columnas
 (DEFUN transC (M)
 	(COND 
 		((NULL M) NIL)
@@ -69,6 +79,7 @@
 
 ;Función esPrimo
 ;Retorna N si N es primo, 0 caso contrario
+;esto es una carcara, ya que la funcionlidad la hace RecPrimo
 (DEFUN esPrimo (N)
 	(COND((= N 1) 0)
 		 ((> N 1) (RecPrimo N 2))
@@ -76,6 +87,12 @@
 )
 
 ;Funcion RecPrimo
+;corrobora si un numero N es primo, si lo es retorna N
+;en caso contrario retorna 0, la idea es simple, voy viendo 
+;a partir de 2 si encuentro divisores, esto es ver si el 
+;modulo da 0, si tiene divisores retorno 0, sino pruebo con
+;el sigueinte eventualmento no encontraré divisores, entonces
+;llegare a N, lo que indica que es primo, en ese punto retorno N 
 (DEFUN RecPrimo (N M)
 	(COND ((= M N) N)
 		  ((< M N) (
